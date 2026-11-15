@@ -2,71 +2,19 @@ package main
 
 import (
 	"fmt"
-	"strings"
+
+	"github.com/lucasschilin/tinyllm-go/tokenizer"
 )
 
-type Tokenizer struct {
-	vocab   map[string]int
-	reverse map[int]string
-}
-
-func NewTokenizer() *Tokenizer {
-	return &Tokenizer{
-		vocab:   make(map[string]int),
-		reverse: make(map[int]string),
-	}
-}
-
-func (t *Tokenizer) Train(text string) {
-	words := strings.Fields(strings.ToLower(text))
-	for _, word := range words {
-		if _, exists := t.vocab[word]; exists {
-			continue
-		}
-
-		t.vocab[word] = len(t.vocab)
-		t.reverse[len(t.vocab)-1] = word
-	}
-}
-
-func (t *Tokenizer) Encode(text string) ([]int, error) {
-	words := strings.Fields(strings.ToLower(text))
-	encoded := make([]int, 0, len(words))
-	for _, word := range words {
-		if id, exists := t.vocab[word]; exists {
-			encoded = append(encoded, id)
-		} else {
-			return nil, fmt.Errorf("unknown token: %s", word)
-		}
-	}
-	return encoded, nil
-}
-
-func (t *Tokenizer) Decode(ids []int) (string, error) {
-	words := make([]string, 0, len(ids))
-	for _, id := range ids {
-		if word, exists := t.reverse[id]; exists {
-			words = append(words, word)
-		} else {
-			return "", fmt.Errorf("unknown id: %d", id)
-		}
-	}
-	return strings.Join(words, " "), nil
-}
-
-func BeautifyDecode(words []string) string {
-	return fmt.Sprintf("[%s]", strings.Trim(strings.Join(words, ", "), ", "))
-}
-
 func main() {
-	tokenizer := NewTokenizer()
+	tokenizer := tokenizer.New()
 
 	text := "The sky is blue and the sun is bright"
 	tokenizer.Train(text)
 	fmt.Printf("Trained Text: '%s'\n", text)
-	fmt.Printf("Vocabulary: %v\n", tokenizer.vocab)
-	fmt.Printf("Vocabulary Reverse: %v\n", tokenizer.reverse)
-	fmt.Printf("Vocabulary Size: %d\n----\n", len(tokenizer.reverse))
+	fmt.Printf("Vocabulary: %v\n", tokenizer.Vocab)
+	fmt.Printf("Vocabulary Reverse: %v\n", tokenizer.Reverse)
+	fmt.Printf("Vocabulary Size: %d\n----\n", len(tokenizer.Reverse))
 
 	input1 := "the sky is blue"
 	encoded1, err1 := tokenizer.Encode(input1)
