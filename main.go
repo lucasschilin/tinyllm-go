@@ -42,16 +42,16 @@ func (t *Tokenizer) Encode(text string) ([]int, error) {
 	return encoded, nil
 }
 
-func (t *Tokenizer) Decode(ids []int) ([]string, error) {
+func (t *Tokenizer) Decode(ids []int) (string, error) {
 	words := make([]string, 0, len(ids))
 	for _, id := range ids {
 		if word, exists := t.reverse[id]; exists {
 			words = append(words, word)
 		} else {
-			return nil, fmt.Errorf("unknown id: %d", id)
+			return "", fmt.Errorf("unknown id: %d", id)
 		}
 	}
-	return words, nil
+	return strings.Join(words, " "), nil
 }
 
 func BeautifyDecode(words []string) string {
