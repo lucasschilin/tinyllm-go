@@ -8,22 +8,22 @@ import (
 )
 
 func main() {
-	tokenizer := tokenizer.New()
+	tok := tokenizer.New()
 
 	text := "The sky is blue and the sun is bright"
-	tokenizer.Train(text)
+	tok.Train(text)
 	fmt.Printf("Trained Text: '%s'\n", text)
-	fmt.Printf("Vocabulary: %v\n", tokenizer.Vocab)
-	fmt.Printf("Vocabulary Reverse: %v\n", tokenizer.Reverse)
-	fmt.Printf("Vocabulary Size: %d\n----\n", len(tokenizer.Reverse))
+	fmt.Printf("Vocabulary: %v\n", tok.Vocab)
+	fmt.Printf("Vocabulary Reverse: %v\n", tok.Reverse)
+	fmt.Printf("Vocabulary Size: %d\n----\n", len(tok.Reverse))
 
 	input := "the sky is blue"
-	encoded, err := tokenizer.Encode(input)
+	encoded, err := tok.Encode(input)
 	if err != nil {
 		fmt.Printf("Error encoding input: %v\n", err)
 		return
 	}
-	decoded, err := tokenizer.Decode(encoded)
+	decoded, err := tok.Decode(encoded)
 	if err != nil {
 		fmt.Printf("Error decoding input: %v\n", err)
 		return
@@ -32,11 +32,11 @@ func main() {
 	fmt.Printf("Encoded: %v\n", encoded)
 	fmt.Printf("Decoded: %s\n\n", decoded)
 
-	vocabSize := len(tokenizer.Vocab)
+	vocabSize := len(tok.Vocab)
 	embeddingDimensions := 5
 
-	embedding := embedding.New(vocabSize, embeddingDimensions)
-	vectors, err := embedding.LookupSequence(encoded)
+	emb := embedding.New(vocabSize, embeddingDimensions)
+	vectors, err := emb.LookupSequence(encoded)
 	if err != nil {
 		fmt.Printf("Error looking up embeddings: %v\n", err)
 		return
