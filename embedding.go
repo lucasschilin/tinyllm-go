@@ -10,7 +10,7 @@ type Embedding struct {
 }
 
 func NewEmbedding(vocabSize, dimensions int) *Embedding {
-	rng := rand.New(rand.NewSource(42))
+	rng := rand.New(rand.NewSource(51))
 
 	weights := make([][]float64, vocabSize)
 
