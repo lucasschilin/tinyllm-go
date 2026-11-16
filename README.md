@@ -7,7 +7,7 @@ The goal is to explore the fundamentals behind LLMs through small, practical imp
 ## Learning Roadmap
 
 - [x] Basic tokenizer
-- [ ] Embeddings
+- [x] Embeddings
 - [ ] Attention mechanism
 - [ ] Transformer architecture
 - [ ] Model training
