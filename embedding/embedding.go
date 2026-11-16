@@ -1,4 +1,4 @@
-package main
+package embedding
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ type Embedding struct {
 	weights [][]float64
 }
 
-func NewEmbedding(vocabSize, dimensions int) *Embedding {
+func New(vocabSize, dimensions int) *Embedding {
 	seed := 42
 	rng := rand.New(rand.NewSource(int64(seed)))
 

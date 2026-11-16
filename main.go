@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/lucasschilin/tinyllm-go/embedding"
 	"github.com/lucasschilin/tinyllm-go/tokenizer"
 )
 
@@ -34,7 +35,7 @@ func main() {
 	vocabSize := len(tokenizer.Vocab)
 	embeddingDimensions := 5
 
-	embedding := NewEmbedding(vocabSize, embeddingDimensions)
+	embedding := embedding.New(vocabSize, embeddingDimensions)
 	vectors, err := embedding.LookupSequence(encoded)
 	if err != nil {
 		fmt.Printf("Error looking up embeddings: %v\n", err)
