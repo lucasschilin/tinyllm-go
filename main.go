@@ -10,7 +10,7 @@ import (
 func main() {
 	tok := tokenizer.New()
 
-	text := "The sky is blue and the sun is bright"
+	text := "The sky is blue and the sun is bright a pony is like a horse but smaller"
 	tok.Train(text)
 	fmt.Printf("Trained Text: '%s'\n", text)
 	fmt.Printf("Vocabulary: %v\n", tok.Vocab)
@@ -46,5 +46,14 @@ func main() {
 	for i, vector := range vectors {
 		fmt.Printf("Token ID %d: %v\n", i, vector)
 	}
+
+	fmt.Println("\nAdditional Lookups Experiment:")
+	horseID, _ := tok.Encode("horse")
+	horseVector, _ := emb.Lookup(horseID[0])
+	fmt.Println("Horse:", horseVector)
+
+	ponyID, _ := tok.Encode("pony")
+	ponyVector, _ := emb.Lookup(ponyID[0])
+	fmt.Println("Pony:", ponyVector)
 
 }
