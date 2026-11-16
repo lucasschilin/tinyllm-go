@@ -44,7 +44,7 @@ func main() {
 
 	fmt.Println("Embeddings:")
 	for i, vector := range vectors {
-		fmt.Printf("Token %d: %v\n", i, vector)
+		fmt.Printf("Token ID %d: %v\n", i, vector)
 	}
 
 }
