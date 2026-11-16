@@ -10,7 +10,8 @@ type Embedding struct {
 }
 
 func NewEmbedding(vocabSize, dimensions int) *Embedding {
-	rng := rand.New(rand.NewSource(51))
+	seed := 42
+	rng := rand.New(rand.NewSource(int64(seed)))
 
 	weights := make([][]float64, vocabSize)
 
@@ -35,7 +36,7 @@ func (e *Embedding) Lookup(tokenID int) ([]float64, error) {
 }
 
 func (e *Embedding) LookupSequence(tokenIDs []int) ([][]float64, error) {
-	vectors := make([][]float64, len(tokenIDs))
+	vectors := make([][]float64, 0, len(tokenIDs))
 
 	for _, tokenID := range tokenIDs {
 		vector, err := e.Lookup(tokenID)

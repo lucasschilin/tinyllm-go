@@ -16,33 +16,34 @@ func main() {
 	fmt.Printf("Vocabulary Reverse: %v\n", tokenizer.Reverse)
 	fmt.Printf("Vocabulary Size: %d\n----\n", len(tokenizer.Reverse))
 
-	input1 := "the sky is blue"
-	encoded1, err1 := tokenizer.Encode(input1)
-	if err1 != nil {
-		fmt.Printf("Error encoding input 1: %v\n", err1)
+	input := "the sky is blue"
+	encoded, err := tokenizer.Encode(input)
+	if err != nil {
+		fmt.Printf("Error encoding input: %v\n", err)
 		return
 	}
-	decoded1, err1 := tokenizer.Decode(encoded1)
-	if err1 != nil {
-		fmt.Printf("Error decoding input 1: %v\n", err1)
+	decoded, err := tokenizer.Decode(encoded)
+	if err != nil {
+		fmt.Printf("Error decoding input: %v\n", err)
 		return
 	}
-	fmt.Printf("Input 1: '%s'\n", input1)
-	fmt.Printf("Encoded: %v\n", encoded1)
-	fmt.Printf("Decoded: %s\n\n", decoded1)
+	fmt.Printf("Input: '%s'\n", input)
+	fmt.Printf("Encoded: %v\n", encoded)
+	fmt.Printf("Decoded: %s\n\n", decoded)
 
-	input2 := "I love the sun and the sky because they are beautiful"
-	encoded2, err2 := tokenizer.Encode(input2)
-	if err2 != nil {
-		fmt.Printf("Error encoding input 2: %v\n", err2)
+	vocabSize := len(tokenizer.Vocab)
+	embeddingDimensions := 5
+
+	embedding := NewEmbedding(vocabSize, embeddingDimensions)
+	vectors, err := embedding.LookupSequence(encoded)
+	if err != nil {
+		fmt.Printf("Error looking up embeddings: %v\n", err)
 		return
 	}
-	decoded2, err2 := tokenizer.Decode(encoded2)
-	if err2 != nil {
-		fmt.Printf("Error decoding input 2: %v\n", err2)
-		return
+
+	fmt.Println("Embeddings:")
+	for i, vector := range vectors {
+		fmt.Printf("Token %d: %v\n", i, vector)
 	}
-	fmt.Printf("Input 2: '%s'\n", input2)
-	fmt.Printf("Encoded: %v\n", encoded2)
-	fmt.Printf("Decoded: %s\n", decoded2)
+
 }

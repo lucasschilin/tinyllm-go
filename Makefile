@@ -2,4 +2,4 @@ tidy:
 	go mod tidy
 
 run:
-	go run main.go
+	go run .
