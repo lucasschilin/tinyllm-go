@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 )
 
@@ -24,4 +25,25 @@ func NewEmbedding(vocabSize, dimensions int) *Embedding {
 	return &Embedding{
 		weights: weights,
 	}
+}
+
+func (e *Embedding) Lookup(tokenID int) ([]float64, error) {
+	if tokenID < 0 || tokenID >= len(e.weights) {
+		return nil, fmt.Errorf("invalid token ID: %d", tokenID)
+	}
+	return e.weights[tokenID], nil
+}
+
+func (e *Embedding) LookupSequence(tokenIDs []int) ([][]float64, error) {
+	vectors := make([][]float64, len(tokenIDs))
+
+	for _, tokenID := range tokenIDs {
+		vector, err := e.Lookup(tokenID)
+		if err != nil {
+			return nil, err
+		}
+		vectors = append(vectors, vector)
+	}
+
+	return vectors, nil
 }
