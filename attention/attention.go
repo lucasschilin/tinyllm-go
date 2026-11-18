@@ -60,7 +60,7 @@ func (a *Attention) Forward(input [][]float64) ([][]float64, [][]float64, error)
 
 func dotProduct(a, b []float64) float64 {
 	var result float64
-	for i, _ := range a {
+	for i := range a {
 		result += a[i] * b[i]
 	}
 
@@ -83,7 +83,7 @@ func softmax(scores []float64) []float64 {
 		sum += probs[i]
 	}
 
-	for i, _ := range probs {
+	for i := range probs {
 		probs[i] /= sum
 	}
 

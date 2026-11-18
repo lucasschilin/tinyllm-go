@@ -8,7 +8,7 @@ The goal is to explore the fundamentals behind LLMs through small, practical imp
 
 - [x] Basic tokenizer
 - [x] Embeddings
-- [ ] Attention mechanism
+- [x] Attention mechanism
 - [ ] Transformer architecture
 - [ ] Model training
 - [ ] Text generation

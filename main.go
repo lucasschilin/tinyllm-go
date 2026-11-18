@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/lucasschilin/tinyllm-go/attention"
 	"github.com/lucasschilin/tinyllm-go/embedding"
 	"github.com/lucasschilin/tinyllm-go/tokenizer"
 )
@@ -33,7 +34,7 @@ func main() {
 	fmt.Printf("Decoded: %s\n\n", decoded)
 
 	vocabSize := len(tok.Vocab)
-	embeddingDimensions := 5
+	embeddingDimensions := 10
 
 	emb := embedding.New(vocabSize, embeddingDimensions)
 	vectors, err := emb.LookupSequence(encoded)
@@ -55,5 +56,23 @@ func main() {
 	ponyID, _ := tok.Encode("pony")
 	ponyVector, _ := emb.Lookup(ponyID[0])
 	fmt.Println("Pony:", ponyVector)
+
+	fmt.Println("\nAttention Mechanism:")
+	attn := attention.New()
+	contextualVectors, attentionWeights, err := attn.Forward(vectors)
+	if err != nil {
+		fmt.Printf("Error in attention forward pass: %v\n", err)
+		return
+	}
+
+	fmt.Println("\nAttention Weights:")
+	for _, row := range attentionWeights {
+		fmt.Printf("%v\n", row)
+	}
+
+	fmt.Println("\nContextual Vectors:")
+	for i, vector := range contextualVectors {
+		fmt.Printf("Token ID %d: %v\n", encoded[i], vector)
+	}
 
 }
