@@ -34,7 +34,7 @@ func main() {
 	fmt.Printf("Decoded: %s\n\n", decoded)
 
 	vocabSize := len(tok.Vocab)
-	embeddingDimensions := 10
+	embeddingDimensions := 5
 
 	emb := embedding.New(vocabSize, embeddingDimensions)
 	vectors, err := emb.LookupSequence(encoded)
@@ -58,7 +58,7 @@ func main() {
 	fmt.Println("Pony:", ponyVector)
 
 	fmt.Println("\nAttention Mechanism:")
-	attn := attention.New()
+	attn := attention.New(embeddingDimensions)
 	contextualVectors, attentionWeights, err := attn.Forward(vectors)
 	if err != nil {
 		fmt.Printf("Error in attention forward pass: %v\n", err)

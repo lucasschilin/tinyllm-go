@@ -3,12 +3,37 @@ package attention
 import (
 	"fmt"
 	"math"
+	"math/rand"
 )
 
-type Attention struct{}
+type Attention struct {
+	wq [][]float64
+	wk [][]float64
+	wv [][]float64
+}
 
-func New() *Attention {
-	return &Attention{}
+func New(dimensions int) *Attention {
+	seed := 44
+	rng := rand.New(rand.NewSource(int64(seed)))
+
+	return &Attention{
+		wq: randomMatrix(rng, dimensions),
+		wk: randomMatrix(rng, dimensions),
+		wv: randomMatrix(rng, dimensions),
+	}
+}
+
+func randomMatrix(rng *rand.Rand, dimensions int) [][]float64 {
+	matrix := make([][]float64, dimensions)
+
+	for i := range matrix {
+		matrix[i] = make([]float64, dimensions)
+		for j := range matrix[i] {
+			matrix[i][j] = (rng.Float64() - 0.5) * 0.1 // Values between -0.05 and 0.05
+		}
+	}
+
+	return matrix
 }
 
 func (a *Attention) Forward(input [][]float64) ([][]float64, [][]float64, error) {
@@ -27,12 +52,15 @@ func (a *Attention) Forward(input [][]float64) ([][]float64, [][]float64, error)
 		}
 	}
 
+	queries := project(input, a.wq)
+	keys := project(input, a.wk)
+	values := project(input, a.wv)
+
 	sequenceLength := len(input)
+	scale := math.Sqrt(float64(dimensions))
 
 	output := make([][]float64, sequenceLength)
 	weights := make([][]float64, sequenceLength)
-
-	scale := math.Sqrt(float64(dimensions))
 
 	for i := 0; i < sequenceLength; i++ {
 		output[i] = make([]float64, dimensions)
@@ -41,8 +69,7 @@ func (a *Attention) Forward(input [][]float64) ([][]float64, [][]float64, error)
 		scores := make([]float64, i+1)
 
 		for j := 0; j <= i; j++ {
-			score := dotProduct(input[i], input[j]) / scale
-			scores[j] = score
+			scores[j] = dotProduct(queries[i], keys[j]) / scale
 		}
 
 		probs := softmax(scores)
@@ -50,12 +77,28 @@ func (a *Attention) Forward(input [][]float64) ([][]float64, [][]float64, error)
 		for j, prob := range probs {
 			weights[i][j] = prob
 			for d := 0; d < dimensions; d++ {
-				output[i][d] += prob * input[j][d]
+				output[i][d] += prob * values[j][d]
 			}
 		}
 	}
 
 	return output, weights, nil
+}
+
+func project(input, weights [][]float64) [][]float64 {
+	result := make([][]float64, len(input))
+
+	for i, vector := range input {
+		result[i] = make([]float64, len(weights[0]))
+
+		for j := range weights[0] {
+			for k := range vector {
+				result[i][j] += vector[k] * weights[k][j]
+			}
+		}
+	}
+
+	return result
 }
 
 func dotProduct(a, b []float64) float64 {
