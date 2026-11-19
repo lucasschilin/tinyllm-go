@@ -42,24 +42,37 @@ func main() {
 		fmt.Printf("Error looking up embeddings: %v\n", err)
 		return
 	}
-
-	fmt.Println("Embeddings:")
+	fmt.Println("Token Embeddings:")
 	for i, vector := range vectors {
 		fmt.Printf("Token ID %d: %v\n", i, vector)
 	}
 
-	fmt.Println("\nAdditional Lookups Experiment:")
-	horseID, _ := tok.Encode("horse")
-	horseVector, _ := emb.Lookup(horseID[0])
-	fmt.Println("Horse:", horseVector)
+	maxSequenceLength := 128
+	posEmb := embedding.NewPositional(maxSequenceLength, embeddingDimensions)
+	positionVectors, err := posEmb.LookupSequence(len(vectors))
+	if err != nil {
+		fmt.Printf("Error looking up positional embeddings: %v\n", err)
+		return
+	}
+	fmt.Println("\nPositional Embeddings:")
+	for i, posVector := range positionVectors {
+		fmt.Printf("Token ID %d: %v\n", i, posVector)
+	}
 
-	ponyID, _ := tok.Encode("pony")
-	ponyVector, _ := emb.Lookup(ponyID[0])
-	fmt.Println("Pony:", ponyVector)
+	inputVectors := make([][]float64, len(vectors))
+	for i := range vectors {
+		inputVectors[i] = make([]float64, embeddingDimensions)
+		for j := 0; j < embeddingDimensions; j++ {
+			inputVectors[i][j] = vectors[i][j] + positionVectors[i][j]
+		}
+	}
+	fmt.Println("\nInput Vectors (Token Embeddings + Positional Embeddings):")
+	for i, inputVector := range inputVectors {
+		fmt.Printf("Token ID %d: %v\n", i, inputVector)
+	}
 
-	fmt.Println("\nAttention Mechanism:")
 	attn := attention.New(embeddingDimensions)
-	contextualVectors, attentionWeights, err := attn.Forward(vectors)
+	contextualVectors, attentionWeights, err := attn.Forward(inputVectors)
 	if err != nil {
 		fmt.Printf("Error in attention forward pass: %v\n", err)
 		return
