@@ -10,7 +10,7 @@ type PositionalEmbedding struct {
 }
 
 func NewPositional(maxSequenceLength, dimensions int) *PositionalEmbedding {
-	seed := 44
+	seed := 45
 	rng := rand.New(rand.NewSource(int64(seed)))
 
 	weights := make([][]float64, maxSequenceLength)
