@@ -5,6 +5,7 @@ import (
 
 	"github.com/lucasschilin/tinyllm-go/attention"
 	"github.com/lucasschilin/tinyllm-go/embedding"
+	"github.com/lucasschilin/tinyllm-go/feedforward"
 	"github.com/lucasschilin/tinyllm-go/tokenizer"
 )
 
@@ -85,6 +86,22 @@ func main() {
 
 	fmt.Println("\nContextual Vectors:")
 	for i, vector := range contextualVectors {
+		fmt.Printf("Token ID %d: %v\n", encoded[i], vector)
+	}
+
+	ffn, err := feedforward.New(embeddingDimensions, embeddingDimensions*4)
+	if err != nil {
+		fmt.Printf("Error creating feedforward network: %v\n", err)
+		return
+	}
+
+	ffnOutput, err := ffn.Forward(contextualVectors)
+	if err != nil {
+		fmt.Printf("Error in feedforward forward pass: %v\n", err)
+		return
+	}
+	fmt.Println("\nFeed-Forward Output:")
+	for i, vector := range ffnOutput {
 		fmt.Printf("Token ID %d: %v\n", encoded[i], vector)
 	}
 
