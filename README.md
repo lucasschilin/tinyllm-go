@@ -7,9 +7,15 @@ The goal is to explore the fundamentals behind LLMs through small, practical imp
 ## Learning Roadmap
 
 - [x] Basic tokenizer
-- [x] Embeddings
-- [x] Attention mechanism
-- [ ] Transformer architecture
+- [x] Token embeddings
+- [x] Positional embeddings
+- [x] Single-head causal self-attention
+- [x] Feed-forward network (FFN)
+- [ ] Residual connections
+- [ ] Layer normalization
+- [ ] Transformer block
+- [ ] Output projection
+- [ ] Softmax and next-token probabilities
 - [ ] Model training
 - [ ] Text generation
 
