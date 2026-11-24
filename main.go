@@ -93,12 +93,27 @@ func main() {
 		fmt.Printf("Token ID %d: %v\n", encoded[i], vector)
 	}
 
+	attentionNormalizationLayer, err := transformer.NewLayerNormalization(embeddingDimensions)
+	if err != nil {
+		fmt.Printf("Error creating layer normalization: %v\n", err)
+		return
+	}
+	attentionNormalized, err := attentionNormalizationLayer.Forward(attentionResidual)
+	if err != nil {
+		fmt.Printf("Error in layer normalization forward pass: %v\n", err)
+		return
+	}
+	fmt.Println("\nNormalized (Attention + Residual) Vectors:")
+	for i, vector := range attentionNormalized {
+		fmt.Printf("Token ID %d: %v\n", encoded[i], vector)
+	}
+
 	ffn, err := feedforward.New(embeddingDimensions, embeddingDimensions*4)
 	if err != nil {
 		fmt.Printf("Error creating feedforward network: %v\n", err)
 		return
 	}
-	ffnOutput, err := ffn.Forward(attentionResidual)
+	ffnOutput, err := ffn.Forward(attentionNormalized)
 	if err != nil {
 		fmt.Printf("Error in feedforward forward pass: %v\n", err)
 		return
@@ -114,6 +129,20 @@ func main() {
 	}
 	fmt.Println("\nFeed-Forward + Residual Vectors:")
 	for i, vector := range ffnResidual {
+		fmt.Printf("Token ID %d: %v\n", encoded[i], vector)
+	}
+	ffnNormalizationLayer, err := transformer.NewLayerNormalization(embeddingDimensions)
+	if err != nil {
+		fmt.Printf("Error creating layer normalization after feedforward: %v\n", err)
+		return
+	}
+	ffnNormalized, err := ffnNormalizationLayer.Forward(ffnResidual)
+	if err != nil {
+		fmt.Printf("Error in layer normalization forward pass after feedforward: %v\n", err)
+		return
+	}
+	fmt.Println("\nNormalized (Feed-Forward + Residual) Vectors:")
+	for i, vector := range ffnNormalized {
 		fmt.Printf("Token ID %d: %v\n", encoded[i], vector)
 	}
 

@@ -12,7 +12,7 @@ The goal is to explore the fundamentals behind LLMs through small, practical imp
 - [x] Single-head causal self-attention
 - [x] Feed-forward network (FFN)mkdir 
 - [x] Residual connections
-- [ ] Layer normalization
+- [x] Layer normalization
 - [ ] Transformer block
 - [ ] Output projection
 - [ ] Softmax and next-token probabilities
@@ -30,14 +30,50 @@ The goal is to explore the fundamentals behind LLMs through small, practical imp
 
 This is an educational project. The implementations are intentionally simplified.
 
-## Current Implementation
+## Architecture
 
-The project currently implements a simplified language model pipeline:
+The current implementation follows a simplified Transformer architecture:
 
-1. **Tokenizer:** Converts text into token IDs using a basic word-level vocabulary.
-2. **Token Embeddings:** Maps each token ID to a numerical vector.
-3. **Positional Embeddings:** Adds information about token positions.
-4. **Self-Attention:** Allows tokens to exchange information using causal attention.
-5. **Feed-Forward Network:** Applies transformations to each token representation independently.
+```text
+Input Text
+    |
+    v
+Tokenizer
+    |
+    v
+Token IDs
+    |
+    v
+Token Embeddings + Positional Embeddings
+    |
+    v
+Transformer Block
+    |
+    +-- Self-Attention
+    |       |
+    |       v
+    |   Residual Connection + Layer Normalization
+    |
+    +-- Feed-Forward Network
+    |       |
+    |       v
+    |   Residual Connection + Layer Normalization
+    |
+    v
+Output Vectors
+```
+
+### Implemented Components
+
+| Component | Description |
+|---|---|
+| Tokenizer | Converts text into token IDs using a word-level vocabulary. |
+| Token Embeddings | Maps token IDs to numerical vectors. |
+| Positional Embeddings | Adds information about token positions. |
+| Self-Attention | Allows tokens to exchange information using causal attention. |
+| Feed-Forward Network | Transforms each token representation independently. |
+| Residual Connections | Preserve the original representation through skip connections. |
+| Layer Normalization | Normalizes each token representation across its dimensions. |
+
 
 All weights are currently randomly initialized. The model has not been trained, so it does not yet understand language or generate meaningful predictions.
