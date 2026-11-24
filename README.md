@@ -10,8 +10,8 @@ The goal is to explore the fundamentals behind LLMs through small, practical imp
 - [x] Token embeddings
 - [x] Positional embeddings
 - [x] Single-head causal self-attention
-- [x] Feed-forward network (FFN)
-- [ ] Residual connections
+- [x] Feed-forward network (FFN)mkdir 
+- [x] Residual connections
 - [ ] Layer normalization
 - [ ] Transformer block
 - [ ] Output projection

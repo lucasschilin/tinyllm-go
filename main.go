@@ -7,6 +7,7 @@ import (
 	"github.com/lucasschilin/tinyllm-go/embedding"
 	"github.com/lucasschilin/tinyllm-go/feedforward"
 	"github.com/lucasschilin/tinyllm-go/tokenizer"
+	"github.com/lucasschilin/tinyllm-go/transformer"
 )
 
 func main() {
@@ -73,19 +74,22 @@ func main() {
 	}
 
 	attn := attention.New(embeddingDimensions)
-	contextualVectors, attentionWeights, err := attn.Forward(inputVectors)
+	attentionOutput, _, err := attn.Forward(inputVectors)
 	if err != nil {
 		fmt.Printf("Error in attention forward pass: %v\n", err)
 		return
 	}
-
-	fmt.Println("\nAttention Weights:")
-	for _, row := range attentionWeights {
-		fmt.Printf("%v\n", row)
+	fmt.Println("\nAttention Vectors:")
+	for i, vector := range attentionOutput {
+		fmt.Printf("Token ID %d: %v\n", encoded[i], vector)
 	}
-
-	fmt.Println("\nContextual Vectors:")
-	for i, vector := range contextualVectors {
+	attentionResidual, err := transformer.AddResidual(inputVectors, attentionOutput)
+	if err != nil {
+		fmt.Printf("Error adding residual connection: %v\n", err)
+		return
+	}
+	fmt.Println("\nAttention + Residual Vectors:")
+	for i, vector := range attentionResidual {
 		fmt.Printf("Token ID %d: %v\n", encoded[i], vector)
 	}
 
@@ -94,14 +98,22 @@ func main() {
 		fmt.Printf("Error creating feedforward network: %v\n", err)
 		return
 	}
-
-	ffnOutput, err := ffn.Forward(contextualVectors)
+	ffnOutput, err := ffn.Forward(attentionResidual)
 	if err != nil {
 		fmt.Printf("Error in feedforward forward pass: %v\n", err)
 		return
 	}
-	fmt.Println("\nFeed-Forward Output:")
+	fmt.Println("\nFeed-Forward Vectors:")
 	for i, vector := range ffnOutput {
+		fmt.Printf("Token ID %d: %v\n", encoded[i], vector)
+	}
+	ffnResidual, err := transformer.AddResidual(attentionResidual, ffnOutput)
+	if err != nil {
+		fmt.Printf("Error adding residual connection after feedforward: %v\n", err)
+		return
+	}
+	fmt.Println("\nTransformer Block Output Vectors (Feed-Forward + Residual Vectors):")
+	for i, vector := range ffnResidual {
 		fmt.Printf("Token ID %d: %v\n", encoded[i], vector)
 	}
 
