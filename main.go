@@ -122,7 +122,7 @@ func main() {
 	for i, vector := range ffnOutput {
 		fmt.Printf("Token ID %d: %v\n", encoded[i], vector)
 	}
-	ffnResidual, err := transformer.AddResidual(attentionResidual, ffnOutput)
+	ffnResidual, err := transformer.AddResidual(attentionNormalized, ffnOutput)
 	if err != nil {
 		fmt.Printf("Error adding residual connection after feedforward: %v\n", err)
 		return
